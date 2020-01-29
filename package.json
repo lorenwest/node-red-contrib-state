@@ -1,0 +1,32 @@
+{
+  "name": "node-red-contrib-state",
+  "author": "Loren West - github.com/lorenwest",
+  "version": "1.0.0",
+  "description": "Shared state with persistence, notification, and history",
+  "license": "MIT",
+  "homepage": "https://github.com/lorenwest/node-red-contrib-state",
+  "bugs": {
+    "url": "https://github.com/lorenwest/node-red-contrib-state/issues"
+  },
+  "dependencies": {
+    "mkdirp": "^1.0.3"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/lorenwest/node-red-contrib-state.git"
+  },
+  "keywords": [
+    "node-red",
+    "state",
+    "shared state",
+    "persistent state",
+    "state machine"
+  ],
+  "node-red": {
+    "nodes": {
+      "state": "lib/state.js",
+      "setState": "lib/setState.js",
+      "getState": "lib/getState.js"
+    }
+  }
+}
