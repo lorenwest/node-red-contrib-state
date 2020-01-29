@@ -27,7 +27,7 @@ section below.
 ## Getting State
 
 Once state is set and persisted using the _Setting State_ section above, the new state is
-made available with the getState node and in the global state context as described below.
+made available with the getState node and in the global state context.
 
 ### The getState Node
 
@@ -56,9 +56,9 @@ Another useful way to obtain shared state is to add it to a message using the _C
 ## Binary State Name/Value Convention
 
 While these nodes can store any type of data, they're designed to work well when the
-state _name_ is a binary statement where the value of _1_ represents IN that state,
-the value of _0_ represents NOT IN that state, and a number between 0 and 1 represents 
-a confidence range.
+state _name_ is a binary statement (like isRoomOccupied0where the value of _1_ represents
+IN that state, the value of _0_ represents NOT IN that state, and a number between 0 and 1
+represents a confidence range.
 
 States following this convention define the value as:
 
