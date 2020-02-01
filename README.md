@@ -100,7 +100,7 @@ Accuracy is undefined, and rounded to 2 digits for documentation purposes only.
 Shared state is saved onto the filesystem, along with history, on each state change. This assures stability
 across server restarts.
 
-Each state is written to a file in a _shared-state_ directory within the current Node-RED application
+Each state is written to a file in a _./shared-state_ directory within the current Node-RED application
 directory. If that isn't a good place to save state on your system, the global context _sharedStateDir_ 
 value can be used to override this default. 
 
