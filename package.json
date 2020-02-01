@@ -24,9 +24,9 @@
   ],
   "node-red": {
     "nodes": {
-      "state": "lib/state.js",
-      "setState": "lib/setState.js",
-      "getState": "lib/getState.js"
+      "shared-state": "lib/state.js",
+      "get-shared-state": "lib/getState.js",
+      "set-shared-state": "lib/setState.js"
     }
   }
 }

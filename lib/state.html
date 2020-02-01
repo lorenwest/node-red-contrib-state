@@ -24,71 +24,51 @@
 
 <!-- Registration -->
 <script type="text/javascript">
-  RED.nodes.registerType('mc-utils:getState',{
-      category: 'microclimates',     // Palette category
-      defaults: {             // Editable properties
-        brokerId: {type:"mqtt-broker", required:true},
-        stateName: {value:"", required:true},
-        nodeName: {value:""},
-      },
-      inputs: 0,
-      outputs: 1,
-
-      // Use a stock icon https://nodered.org/docs/creating-nodes/appearance#stock-icons
-      // or reference another package icon 'node-red/redis.png', 'node-red-suncalc/sun.png',
-      // or a font-awesome font 'font-awesome/fa-area-chart',
-      // or create an icon using the style guide and place it under lib/icons
-      icon: 'node-red/file-in.png',
-
-      // Style guide suggests choosing a color among the following
-      // https://nodered.org/docs/creating-nodes/appearance#background-colour
-      color: '#C7E9C0',
-
-      // Style guide says align:right if it's input-only (last in a flow)
-      // https://nodered.org/docs/creating-nodes/appearance#alignment
-      align: 'left',
-
-      // Label style guide: https://nodered.org/docs/creating-nodes/appearance#labels
-      label: function() {
-        return this.nodeName ? this.nodeName : (this.stateName ? 'get: ' + this.stateName : 'get state');
-      },
-      paletteLabel: function() {
-        return 'get state';
-      },
-      labelStyle: function() {
-        return this.stateName ? "node_label_italic" : "";
-      },
-
+  RED.nodes.registerType('shared-state',{
+    category: 'config',     // Palette category
+    defaults: {             // Editable properties
+      name: {value:"", required:true},
+      historyCount: {value: 2, required:true},
+    },
+    label: function() {
+      if (this.name) {
+          return this.name;
+      }
+      return "New State";
+    }
   });
 </script>
 
 <!-- Properties Editor -->
-<script type="text/x-red" data-template-name="mc-utils:getState">
+<script type="text/x-red" data-template-name="shared-state">
 <input type="text" id="username" style="width:0;height:0;z-index:-1;position:absolute;left:0;top:0" />
 <input type="password" id="password" style="width:0;height:0;z-index:-1;position:absolute;left:0;top:0" />
 
 <div class="form-row">
-    <label for="node-input-stateName"><i style="width:20px; text-align:left;" class="icon-tag"></i> Name</label>
-    <input type="text" id="node-input-stateName" placeholder="MY_STATE_NAME">
+    <label for="node-config-input-name"><i style="width:20px; text-align:left;" class="icon-tag"></i> State Name</label>
+    <input type="text" id="node-config-input-name" placeholder="myStateName">
 </div>
 
 <div class="form-row">
-    <label for="node-input-brokerId"><i style="width:20px; text-align:left;" class="fa fa-database"></i> Read From</label>
-    <input type="text" id="node-input-brokerId">
+    <label for="node-config-input-historyCount"><i style="width:20px; text-align:left;" class="fa fa-area-chart"></i> History</label>
+    Keep <input style="width: 50px; text-align: right; margin:0 4px; padding: 0px 6px 0 0px;" type="number" min="0" id="node-config-input-historyCount"> items
 </div>
 
-<div class="form-row">
-    <label for="node-input-nodeName"><i style="width:20px; text-align:left;" class="icon-tag"></i> Node Label</label>
-    <input type="text" id="node-input-nodeName" placeholder="(optional)">
+<div class="form-tips">
+    <span>Tip: <i style="width:24px; text-align:center" class="fa fa-area-chart"></i> 
+    Keep this number trim, as history is stored in memory and written to disk on each state change.</span>
 </div>
 
 </script>
 
 <!-- Help Text -->
-<script type="text/x-red" data-help-name="mc-utils:getState">
- <h3>Get Persistent State</h3>
+<script type="text/x-red" data-help-name="shared-state">
+ <h3>Persistent State</h3>
  <hr/>
- <p>
-   This node ...
- </p>
+ <h4>Elements</h4>
+ <ul>
+   <li><b>State Name</b> - Name of the persistent shared state. This is the key used to identify the state, and can follow whatever global variable naming convention you choose.</li>
+   <li><b>History</b> - Number of state changes to keep.</li>
+ </ul>
+
 </script>

@@ -24,12 +24,12 @@
 
 <!-- Registration -->
 <script type="text/javascript">
-  RED.nodes.registerType('mc-utils:getState',{
-      category: 'microclimates',     // Palette category
+  RED.nodes.registerType('get-shared-state',{
+      category: 'input',     // Palette category
       defaults: {             // Editable properties
-        brokerId: {type:"mqtt-broker", required:true},
-        stateName: {value:"", required:true},
-        nodeName: {value:""},
+        state: {type:"shared-state", required:true},
+        name: {value:""},
+        triggerOnInit: {value:true},
       },
       inputs: 0,
       outputs: 1,
@@ -38,7 +38,7 @@
       // or reference another package icon 'node-red/redis.png', 'node-red-suncalc/sun.png',
       // or a font-awesome font 'font-awesome/fa-area-chart',
       // or create an icon using the style guide and place it under lib/icons
-      icon: 'node-red/file-in.png',
+      icon: 'font-awesome/fa-sign-out',
 
       // Style guide suggests choosing a color among the following
       // https://nodered.org/docs/creating-nodes/appearance#background-colour
@@ -50,45 +50,65 @@
 
       // Label style guide: https://nodered.org/docs/creating-nodes/appearance#labels
       label: function() {
-        return this.nodeName ? this.nodeName : (this.stateName ? 'get: ' + this.stateName : 'get state');
+        return this.name ? this.name : 'get state';
       },
       paletteLabel: function() {
         return 'get state';
       },
       labelStyle: function() {
-        return this.stateName ? "node_label_italic" : "";
+        return this.state ? "node_label_italic" : "";
+      },
+      oneditsave: function() {
+        // Set the node name to the selected state
+        this.name = $('#node-input-state option:selected').text();
       },
 
   });
 </script>
 
 <!-- Properties Editor -->
-<script type="text/x-red" data-template-name="mc-utils:getState">
+<script type="text/x-red" data-template-name="get-shared-state">
 <input type="text" id="username" style="width:0;height:0;z-index:-1;position:absolute;left:0;top:0" />
 <input type="password" id="password" style="width:0;height:0;z-index:-1;position:absolute;left:0;top:0" />
 
 <div class="form-row">
-    <label for="node-input-stateName"><i style="width:20px; text-align:left;" class="icon-tag"></i> Name</label>
-    <input type="text" id="node-input-stateName" placeholder="MY_STATE_NAME">
+    <label for="node-input-state"><i style="width:20px; text-align:left;" class="fa fa-sign-out"></i> State</label>
+    <input type="text" id="node-input-state">
 </div>
 
 <div class="form-row">
-    <label for="node-input-brokerId"><i style="width:20px; text-align:left;" class="fa fa-database"></i> Read From</label>
-    <input type="text" id="node-input-brokerId">
+    <label for="node-input-triggerOnInit">&nbsp;</label>
+    <input type="checkbox" id="node-input-triggerOnInit" style="display:inline-block; width:15px; vertical-align:baseline;">
+    <span>Trigger on init</span>&nbsp;
 </div>
 
-<div class="form-row">
-    <label for="node-input-nodeName"><i style="width:20px; text-align:left;" class="icon-tag"></i> Node Label</label>
-    <input type="text" id="node-input-nodeName" placeholder="(optional)">
-</div>
 
 </script>
 
 <!-- Help Text -->
-<script type="text/x-red" data-help-name="mc-utils:getState">
- <h3>Get Persistent State</h3>
+<script type="text/x-red" data-help-name="get-shared-state">
+ <h3>Get Shared State</h3>
  <hr/>
+ This triggers a new flow on state change.
  <p>
-   This node ...
  </p>
+ <h4>Configuration</h4>
+ <ul>
+   <li><b>State</b> - Reference to the shared state. It is defined independently to be shared among many <i>getState</i> and <i>setState</i> nodes.</li>
+   <li><b>Trigger on init</b> - If checked, this flow will be triggered on initialization and on state change. This can assure downstream nodes in the flow have the correct state on initialziation. Un-check this if you want your flow triggered on state <i>change</i> only.</li>
+ </ul>
+ <h4>Message Flows</h4>
+ When this starts a new flow, the <i>msg</i> object contains
+ <ul>
+   <li><b>msg.payload</b> - This contains the current (new) state value.</li>
+   <li><b>msg.state</b> - This contains the full state object, with the following elements:
+     <ul>
+       <li><b>value</b> - Current state value</li>
+       <li><b>prev</b> - Previous state value</li>
+       <li><b>timestamp</b> - Timestamp of the state change in Date.now() format</li>
+       <li><b>history</b> - an array of state change <pre>{val:value, ts:timestamp}</pre> objects, sorted newest to oldest</li>
+     </ul>
+   </li>
+ </ul>
+
 </script>
