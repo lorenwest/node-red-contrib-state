@@ -64,7 +64,7 @@ Another useful way to obtain shared state is to add it to a message using the _C
 ## Binary State Name/Value Convention
 
 While these nodes can store any type of data, they're designed to work well when the
-state _name_ is a binary statement (like isRoomOccupied0where the value of _1_ represents
+state _name_ is a binary statement (like _isRoomOccupied_ where the value of _1_ represents
 IN that state, the value of _0_ represents NOT IN that state, and a number between 0 and 1
 represents a confidence range.
 
