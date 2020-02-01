@@ -4,6 +4,8 @@ Shared state with persistence, notification, and history
 This contributes [Node-RED](http://nodered.org/) nodes for defining logical state,
 sharing that state across nodes, tracking history, and triggering flows based on change.
 
+![](https://raw.githubusercontent.com/lorenwest/node-red-contrib-state/master/img/GetState.png)
+
 Shared state with history is persisted, remaining stable across reboots of Node-RED.
 
 ## Logical State
