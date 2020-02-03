@@ -1,3 +1,8 @@
+1.2.0 - 02/03/2020
+==================
+
+  * Changed get/set node categories to 'common' for node-red 1.0.
+
 1.1.0 - 02/02/2020
 ==================
 
