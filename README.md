@@ -84,6 +84,10 @@ See the
 [Global Context](https://nodered.org/docs/user-guide/writing-functions#global-context) 
 discussion for further information.
 
+## See Also
+
+* [Representing Binary State with Confidence](https://github.com/lorenwest/node-red-contrib-state/wiki/Binary-State-with-External-Validation)
+
 ## Installation
 
 1. Open the Node-RED dashboard
@@ -91,10 +95,6 @@ discussion for further information.
 1. Select the _Install_ tab
 1. Enter `node-red-contrib-state` into the search
 1. Press the `install` button for this module
-
-## See Also
-
-* Wiki: [Representing Binary State with Confidence](https://github.com/lorenwest/node-red-contrib-state/wiki/Binary-State-with-External-Validation)
 
 ## License
 
