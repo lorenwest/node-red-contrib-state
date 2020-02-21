@@ -12,7 +12,7 @@ Shared state with history is persisted, remaining stable across reboots of Node-
 
 State associated with a physical device is considered physical state. Logical state 
 are computations such as "Person Is In The Room", usually a combination of physical
-state and other logical state.
+state and some computation.
 
 Logical state helps with system understanding. "Person Is In The Room" may be the
 combination of many physical and logical states, and can be used for example, 
@@ -61,40 +61,6 @@ Another useful way to obtain shared state is to add it to a message using the _C
 
 ![](https://raw.githubusercontent.com/lorenwest/node-red-contrib-state/master/img/ChangeNode.png)
 
-## Binary State Name/Value Convention
-
-While these nodes can store any type of data, they're designed to work well when the
-state _name_ is a binary statement (like _isRoomOccupied_ where the value of _1_ represents
-IN that state, the value of _0_ represents NOT IN that state, and a number between 0 and 1
-represents a confidence range.
-
-States following this convention define the value as:
-
-  * 1.00 - IN this state
-  * 0.66 - Thought to be IN this state, but un-verified
-  * 0.50 - Unsure, more IN than not
-  * 0.49 - Unsure, more NOT than in
-  * 0.33 - Thought to be NOT in this state, but un-verified
-  * 0.00 - NOT in this state
-
-This convention helps with consistency, and assists derived states in computing their confidence.
-
-A consistent pattern starts with setting a state in either 0.66 or 0.33 until it's 
-externally validated, either increasing or decreasing the value based on 
-the number of external validations, and the confidence in those validations.
-
-If states decay over time, they can increase to 0.65 or decrease to 0.34 
-but generally don't expand outside of that range without external validation.
-
-Ranges
-
-  * 0 / 1 - Confidence not considered.
-  * 0.66 / 0.33 - Initial unverified state
-  * Verified (0.67 - .99, 0.32 - 0.01) - Externally verified, value specifies confidence in external validation
-  * Unsure (0.34 - 0.65) - Unsure about the value - in this range due to time decay or failed validation
-
-Accuracy is undefined, and rounded to 2 digits for documentation purposes only.
-
 ## Shared State Storage
 
 Shared state is saved onto the filesystem, along with history, on each state change. This assures stability
@@ -125,6 +91,10 @@ discussion for further information.
 1. Select the _Install_ tab
 1. Enter `node-red-contrib-state` into the search
 1. Press the `install` button for this module
+
+## See Also
+
+* Wiki: [Representing Binary State with Confidence](https://github.com/lorenwest/node-red-contrib-state/wiki/Binary-State-with-External-Validation)
 
 ## License
 
