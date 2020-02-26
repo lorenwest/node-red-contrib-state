@@ -29,6 +29,9 @@
       defaults: {             // Editable properties
         state: {type:"shared-state", required:true},
         name: {value:""},
+        triggerOnInit: {value:true},
+        provideOutput: {value:false},
+        outputs: {value:0},
       },
       inputs: 1,
       outputs: 0,
@@ -60,6 +63,17 @@
       oneditsave: function() {
         // Set the node name to the selected state
         this.name = $('#node-input-state option:selected').text();
+        this.outputs = $('#node-input-provideOutput')[0].checked ? 1 : 0;
+      },
+      oneditprepare: function() {
+        let node = this;
+        function showTrigger(show) {
+          $('#trigger-on-init')[show ? 'show' : 'hide']();
+        }
+        $('#node-input-provideOutput').on('change', function() {
+          showTrigger(this.checked);
+        });
+        showTrigger(node.provideOutput);
       },
 
   });
@@ -75,6 +89,18 @@
     <input type="text" id="node-input-state">
 </div>
 
+<div class="form-row">
+    <label for="node-input-provideOutput">&nbsp;</label>
+    <input type="checkbox" id="node-input-provideOutput" style="display:inline-block; width:15px; vertical-align:baseline;">
+    <span>Provide output</span>&nbsp;
+</div>
+
+<div id="trigger-on-init" class="form-row">
+    <label for="node-input-triggerOnInit">&nbsp;</label>
+    <input type="checkbox" id="node-input-triggerOnInit" style="display:inline-block; width:15px; vertical-align:baseline;">
+    <span>Trigger on init</span>&nbsp;
+</div>
+
 </script>
 
 <!-- Help Text -->
@@ -87,5 +113,6 @@
  <h4>Configuration</h4>
  <ul>
    <li><b>State</b> - Reference to the shared state. It is defined independently to be shared among many <i>getState</i> and <i>setState</i> nodes.</li>
+   <li><b>Trigger on init</b> - If checked, this will output on initialization and on state change. This can assure downstream nodes in the flow have the correct state on initialziation. Un-check this if you want your flow triggered on state <i>change</i> only.</li>
  </ul>
 </script>

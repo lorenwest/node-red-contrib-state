@@ -1,3 +1,9 @@
+1.3.0 - 02/26/2020
+==================
+
+  * Provide output for SET nodes
+  * Initialize global state so it's always available
+
 1.2.1 - 02/21/2020
 ==================
 
