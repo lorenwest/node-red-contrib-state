@@ -1,3 +1,9 @@
+1.4.0 - 03/08/2020
+==================
+
+  * Publish animated gif
+  * Assure state names are valid JS variables
+
 1.3.1 - 02/26/2020
 ==================
 

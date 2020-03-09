@@ -24,10 +24,16 @@
 
 <!-- Registration -->
 <script type="text/javascript">
+  isValidName = function (value) {
+    let isValid = isValidES2015VarName(value);
+    $('#node-config-input-valid').css({display: isValid ? 'none' : 'block'});
+    return isValid;
+  }
+
   RED.nodes.registerType('shared-state',{
     category: 'config',     // Palette category
     defaults: {             // Editable properties
-      name: {value:"", required:true},
+      name: {value:"", required:true, validate:isValidName},
       historyCount: {value: 2, required:true},
     },
     label: function() {
@@ -35,7 +41,13 @@
           return this.name;
       }
       return "New State";
-    }
+    },
+    oneditprepare: function () {
+      $("#node-config-input-name").change(function () {
+        let value = $('#node-config-input-name').val() || '';
+        isValidName(value);
+      });
+    },
   });
 </script>
 
@@ -45,8 +57,14 @@
 <input type="password" id="password" style="width:0;height:0;z-index:-1;position:absolute;left:0;top:0" />
 
 <div class="form-row">
-    <label for="node-config-input-name"><i style="width:20px; text-align:left;" class="icon-tag"></i> State Name</label>
+    <label for="node-config-input-name"><i style="width:18px; text-align:left;" class="fa fa-tag"></i> State Name</label>
     <input type="text" id="node-config-input-name" placeholder="myStateName">
+</div>
+
+<div id="node-config-input-valid" style="display:none; margin-bottom: 10px;" class="form-tips">
+    Error:
+    <i style="width:18px; text-align:left;" class="fa fa-tag"></i>
+    State Name is available from the JS node, and must be a valid variable name.
 </div>
 
 <div class="form-row">
@@ -73,7 +91,7 @@
 
 </script>
 
-<script type="text/javascript">
+<script type="text/javascript" x-comment="Below is code from npm:is-valid-var-name@1.0.2">
 
 /**
  * Allowed first and subsequent characters in a variable name.
@@ -98,7 +116,7 @@ function isValidES2015VarName(name) {
   if (name === 'await') { return false; }
   if (name === 'enum') { return false; }
 
-  return validateVarName(allowedCharactersES2015, name, exports.strict);
+  return validateVarName(allowedCharactersES2015, name, true);
 }
 
 /**
@@ -112,7 +130,7 @@ function isValidES2015VarName(name) {
  * @public
  */
 function isValidES5VarName(name) {
-  return validateVarName(allowedCharactersES5, name, exports.es5.strict);
+  return validateVarName(allowedCharactersES5, name, true);
 }
 
 /**
