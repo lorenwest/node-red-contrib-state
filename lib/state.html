@@ -34,19 +34,73 @@
     category: 'config',     // Palette category
     defaults: {             // Editable properties
       name: {value:"", required:true, validate:isValidName},
+      lbl: {value:null},
+      tags: {value:null},
       historyCount: {value: 2, required:true},
+      dataType: {value:null},  // str, bool, num, obj
+      boolType: {value:null},  // bool, num, str
+      boolStrTrue: {value:null},  // On, Active, ...
+      boolStrFalse: {value:null},  // Off, Inactive, ...
+      precision: {value:null},     // Digits of precision to the right of the decimal point
+      numMin: {value:null},
+      numMax: {value:null},
+      unit: {value:null},         // Valid unit defined in npm:convert-units
     },
     label: function() {
+      if (this.lbl) {
+          return this.lbl;
+      }
       if (this.name) {
           return this.name;
       }
       return "New State";
     },
     oneditprepare: function () {
+      let node = this;
+
+      // Input validations
       $("#node-config-input-name").change(function () {
         let value = $('#node-config-input-name').val() || '';
         isValidName(value);
       });
+      $("#node-config-input-dataType").change(function () {
+        let value = $('#node-config-input-dataType').val() || 'str';
+        $('#node-config-input-dataType').val(value);
+        $('.state-datatype').css({display:'none'});
+        setTimeout(function() {
+          $('.state-datatype-' + value).css({display:'inline-block'});
+        },1);
+      });
+      $("#node-config-input-boolType").change(function () {
+        let value = $('#node-config-input-boolType').val() || 'bool';
+        $('#node-config-input-boolType').val(value);
+        $('.state-datatype-bool-str').css({display:value == 'str' ? 'inline' : 'none'});
+      });
+      $("#node-config-input-unit").change(function () {
+        let value = $('#node-config-input-unit').val();
+        if (value == '--') {
+          $('#node-config-input-unit').val('');
+        }
+      });
+
+      // Load the units dropdown. Response is a sorted array of units from convert-units.list()
+      $.getJSON('shared-state/units', function(units) {
+        let currentMeasure = '';
+        let $dropdown = $("#node-config-input-unit").html('<option value="">(unspecified)</option>');
+        for (i = 0; i < units.length; i++) {
+          let unit = units[i];
+          let abbr = unit.abbr;
+          let measure = unit.measure;
+          let plural = unit.plural;
+          let selected = (node.unit == abbr ? ' selected' : '');
+
+          if (measure != currentMeasure) {
+            currentMeasure = measure;
+            $dropdown.append('<option value="--"></option><option value="--">--- ' + measure.charAt(0).toUpperCase() + measure.slice(1) + ' ---</option>');
+          }
+          $dropdown.append('<option value="' + abbr + '"' + selected + '>' + plural.charAt(0).toUpperCase() + plural.slice(1) + ' (' + abbr + ')</option>');
+        }   
+      });               
     },
   });
 </script>
@@ -57,18 +111,23 @@
 <input type="password" id="password" style="width:0;height:0;z-index:-1;position:absolute;left:0;top:0" />
 
 <div class="form-row">
-    <label for="node-config-input-name"><i style="width:18px; text-align:left;" class="fa fa-tag"></i> State Name</label>
+    <label for="node-config-input-name"><i class="fa fa-code fa-fw"></i> State Name</label>
     <input type="text" id="node-config-input-name" placeholder="myStateName">
 </div>
 
 <div id="node-config-input-valid" style="display:none; margin-bottom: 10px;" class="form-tips">
     Error:
-    <i style="width:18px; text-align:left;" class="fa fa-tag"></i>
+    <i class="fa fa-tag fa-fw"></i>
     State Name is available from the JS node, and must be a valid variable name.
 </div>
 
 <div class="form-row">
-    <label for="node-config-input-historyCount"><i style="width:20px; text-align:left;" class="fa fa-area-chart"></i> History</label>
+    <label for="node-config-input-lbl"><i class="fa fa-tag fa-fw"></i> Label</label>
+    <input type="text" id="node-config-input-lbl" placeholder="My State Name (optional)">
+</div>
+
+<div class="form-row">
+    <label for="node-config-input-historyCount"><i class="fa fa-area-chart fa-fw"></i> History</label>
     Keep <input style="width: 50px; text-align: right; margin:0 4px; padding: 0px 6px 0 0px;" type="number" min="0" id="node-config-input-historyCount"> items
 </div>
 
@@ -77,18 +136,71 @@
     Keep this number trim, as history is stored in memory and written to disk on each state change.</span>
 </div>
 
+<h4><i class="fa fa-cog"></i> Optional metadata</h4>
+
+<div class="form-row">
+    <label for="node-config-input-dataType"><i class="fa fa-database fa-fw"></i> Data Type</label>
+
+    <select style="width:84px" id="node-config-input-dataType">
+      <option value="str" selected="selected">String</option>
+      <option value="bool">Boolean</option>
+      <option value="num">Number</option>
+      <option value="obj">Object</option>
+    </select>
+
+    <span class="state-datatype state-datatype-bool">
+      <select style="width:94px" id="node-config-input-boolType">
+        <option value="bool" selected="selected">true / false</option>
+        <option value="num">1 / 0</option>
+        <option value="str">String</option>
+      </select>
+      <span class="state-datatype-bool-str">
+        <input style="width:64px; text-align:center;" type="text" id="node-config-input-boolStrTrue" placeholder="on"> /
+        <input style="width:64px; text-align:center;" type="text" id="node-config-input-boolStrFalse" placeholder="off">
+      </span>
+    </span>
+
+    <span class="state-datatype state-datatype-num">
+      <span style="padding-left: 10px;">unit:</span>
+      <select style="width:190px" id="node-config-input-unit">
+      </select>
+    </span>
+
+    <span class="state-datatype state-datatype-num" style="padding: 10px 0 0 95px">
+      <span style="padding-left: 10px;">min:</span>
+      <input style="width:64px; text-align:right;" type="number" id="node-config-input-numMin">
+      <span> max:</span>
+      <input style="width:64px; text-align:right;" type="number" id="node-config-input-numMax">
+      <span> precision: </span>
+      <input type="number" min="0" style="width:40px; text-align:right;" id="node-config-input-precision">
+      <span> digits</span>
+    </span>
+
+</div>
+
+<div class="form-row">
+    <label for="node-config-input-tags"><i class="fa fa-tags fa-fw"></i> Tags</label>
+    <input type="text" id="node-config-input-tags" placeholder="comma,separated,tags">
+</div>
+
 </script>
 
 <!-- Help Text -->
 <script type="text/x-red" data-help-name="shared-state">
- <h3>Persistent State</h3>
+ <h4>Persistent State</h4>
  <hr/>
  <h4>Elements</h4>
  <ul>
-   <li><b>State Name</b> - Name of the persistent shared state. This is the key used to identify the state, and can follow whatever global variable naming convention you choose.</li>
+   <li><b>State Name</b> - Name of the persistent shared state. This is the key used to identify the state, and must be a valid JavaScript variable name.</li>
+   <li><b>Label</b> - The label that appears on the state node.</li>
    <li><b>History</b> - Number of state changes to keep. Set to 0 for no state save or history.</li>
  </ul>
-
+ <h4>Optional Metadata</h4>
+ Expand the state definition with metadata. This can be used to guarantee a data type, convert units, and provide tags to help find state nodes.
+ <ul>
+   <li><b>Data Type</b> - Specify a data type to assure the correct JavaScript data type. This performs simple data type conversions when setting state, and can provide additional value such as min/max assurance and unit of measure awareness. States with compatible units of measure can be chained to perform unit converstion.
+   <li><b>tags</b> - Comma separated list of tags to help classify the state node.</li>
+ </ul>
 </script>
 
 <script type="text/javascript" x-comment="Below is code from npm:is-valid-var-name@1.0.2">

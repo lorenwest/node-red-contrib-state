@@ -21,11 +21,20 @@ in determining room HVAC profile.
 These nodes provide a place to represent that logical state, share it with other
 nodes, persist it, keep history, and provide state change triggers for flows.
 
+## Data Typing
+
+State nodes can specify data types offering inbound type conversions, min/max
+limiting, and unit of measue awareness and conversion.
+
 ## Setting State
 
 State is set by sending the value to the setState node in the _msg.payload_. After saving
 to disk, the new state is made available to all mechanisms described in the _Getting State_
 section below.
+
+If data type is specified, setting state will assure the correct data type is represented.
+
+State nodes with compatible units of measure can be chaned for unit of measure conversion.
 
 ## Getting State
 
@@ -37,10 +46,11 @@ made available with the getState node and in the global state context.
 The getState node can be dropped onto any flow to trigger a message on initialization, and on
 state change. The _msg.topic_ contains the state name, the _msg.payload_ contains the state value,
 and the _msg.state_ object contains an object with the following structure 
-`{value:value, prev:prev_value, timestamp:num, history:history}`, where the _history_ object
+`{value:value, prev:prev_value, timestamp:num, history:history, config:config}`, where the _history_ object
 is an array of `{val:value, ts=num}` objects. Timestamps are milliseconds from the Unix epoch
 because they serialize nicely, they work well for `Date()` construction, and they simplify
-computing durations between timestamps.
+computing durations between timestamps. The `config` element is the state configuration, containing
+any metadata defined on the state node such as data type, unit of measure, etc.
 
 ### Shared State with Global Context
 

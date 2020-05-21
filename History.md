@@ -1,3 +1,15 @@
+1.5.0 - 05/20/2020
+==================
+
+  * Added state label
+  * Added data types with inbound type conversion
+  * Added tags for classification
+
+1.4.2 - 03/31/2020
+==================
+
+  * Fixed a history/persist issue #3
+
 1.4.1 - 03/22/2020
 ==================
 
