@@ -1,3 +1,9 @@
+1.5.1 - 09/01/2020
+==================
+
+  * Fixed boolean change misfire under certain conditions
+    (see https://github.com/lorenwest/node-red-contrib-state/issues/5)
+
 1.5.0 - 05/20/2020
 ==================
 
