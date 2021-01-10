@@ -45,6 +45,7 @@
       numMin: {value:null},
       numMax: {value:null},
       unit: {value:null},         // Valid unit defined in npm:convert-units
+      saveInterval: {value: "0", required:true},
     },
     label: function() {
       if (this.lbl) {
@@ -133,7 +134,17 @@
 
 <div class="form-tips">
     <span>Tip: <i style="width:24px; text-align:center" class="fa fa-area-chart"></i> 
-    Keep this number trim, as history is stored in memory and written to disk on each state change.</span>
+    Keep this number trim, as history is stored in memory and written to disk on state change.</span>
+</div>
+
+<div class="form-row">
+    <label for="node-config-input-saveInterval"><i class="fa fa-area-chart fa-fw"></i> Saving interval</label>
+    <input type="number" style="width: 100px" min="0" id="node-config-input-saveInterval"> ms
+</div>
+
+<div class="form-tips">
+    <span>Tip: <i style="width:24px; text-align:center" class="fa fa-area-chart"></i>
+    This parameter can be used for reducing disk writes which can be useful if performance is critical and state changes quickly.</span>
 </div>
 
 <h4><i class="fa fa-cog"></i> Optional metadata</h4>
@@ -194,6 +205,7 @@
    <li><b>State Name</b> - Name of the persistent shared state. This is the key used to identify the state, and must be a valid JavaScript variable name.</li>
    <li><b>Label</b> - The label that appears on the state node.</li>
    <li><b>History</b> - Number of state changes to keep. Set to 0 for no state save or history.</li>
+   <li><b>Saving interval</b> - Rate limit for saving state changes. Defaults to 0 when every state change is saved to disk.</li>
  </ul>
  <h4>Optional Metadata</h4>
  Expand the state definition with metadata. This can be used to guarantee a data type, convert units, and provide tags to help find state nodes.
