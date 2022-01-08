@@ -30,6 +30,7 @@
         state: {type:"shared-state", required:true},
         name: {value:""},
         triggerOnInit: {value:true},
+        triggerOnChange: {value:true},
         provideOutput: {value:false},
         outputs: {value:0},
       },
@@ -61,19 +62,33 @@
         return this.state ? "node_label_italic" : "";
       },
       oneditsave: function() {
+        let node = this;
         // Set the node name to the selected state
-        this.name = $('#node-input-state option:selected').text();
-        this.outputs = $('#node-input-provideOutput')[0].checked ? 1 : 0;
+        node.name = $('#node-input-state option:selected').text();
+        node.outputs = $('#node-input-provideOutput')[0].checked ? 1 : 0;
+	    // Save the trigger method settings
+	    node.triggerOnInit = $('#triggerOnInit').prop('checked') || $('#triggerOnBoth').prop('checked');
+	    node.triggerOnChange = $('#triggerOnChange').prop('checked') || $('#triggerOnBoth').prop('checked');
       },
       oneditprepare: function() {
         let node = this;
-        function showTrigger(show) {
-          $('#trigger-on-init')[show ? 'show' : 'hide']();
+  		if (node.triggerOnInit && 
+			(typeof(node.triggerOnChange) === "undefined" || node.triggerOnChange)) {
+			$('#triggerOnBoth').prop('checked',true);	// Default to both like the previous version		
+		}
+		else if (node.triggerOnInit) {
+			$('#triggerOnInit').prop('checked',true);			
+		}
+		else {
+			$('#triggerOnChange').prop('checked',true);			
+		}
+      function showTriggers(show) {
+          $('#triggers')[show ? 'show' : 'hide']();
         }
         $('#node-input-provideOutput').on('change', function() {
-          showTrigger(this.checked);
+          showTriggers(this.checked);
         });
-        showTrigger(node.provideOutput);
+        showTriggers(node.provideOutput);
       },
 
   });
@@ -95,10 +110,16 @@
     <span>Provide output</span>&nbsp;
 </div>
 
-<div id="trigger-on-init" class="form-row">
-    <label for="node-input-triggerOnInit">&nbsp;</label>
-    <input type="checkbox" id="node-input-triggerOnInit" style="display:inline-block; width:15px; vertical-align:baseline;">
-    <span>Trigger on init</span>&nbsp;
+<div class="form-row" id="triggers">
+    <label for="triggerOnInit"><i style="width:20px; text-align:left;" class="fa fa-bolt"></i> Fire On</label>
+    <input type="radio" id="triggerOnInit" name="triggermode" style="display:inline-block; width:15px; vertical-align:baseline;">
+    <span>Initializing</span><br \>
+    <label for="triggerOnChange">&nbsp;</label>
+    <input type="radio" id="triggerOnChange" name="triggermode" style="display:inline-block; width:15px; vertical-align:baseline;">
+    <span>State Change</span><br \>
+    <label for="triggerOnBoth">&nbsp;</label>
+    <input type="radio" id="triggerOnBoth" name="triggermode" style="display:inline-block; width:15px; vertical-align:baseline;">
+    <span>Both</span>&nbsp;
 </div>
 
 </script>
@@ -114,6 +135,6 @@
  <ul>
    <li><b>State</b> - Reference to the shared state. It is defined independently to be shared among many <i>getState</i> and <i>setState</i> nodes.</li>
    <li><b>Provide output</b> - Place an output handle on the node for connecting to downstream nodes</li>
-   <li><b>Trigger on init</b> - If checked, this will output on initialization and on state change. This can assure downstream nodes in the flow have the correct state on initialziation. Un-check this if you want your flow triggered on state <i>change</i> only.</li>
+   <li><b>Fire on</b> - The current state will be sent on either or both of two events when <i>Provide output</i> is checked.  If <i>Initializing</i> is selected this flow will be triggered on initialization only.  If <i>State Change</i> is selected then it will be triggered on state change only. When <i>Both</i> is selected it will trigger on either.  Updating from earlier versions will result in <i>Both</i> being selected if <i>Init</i> was previously checked, or <i>State Change</i> if not, so that original behavior is maintained.</li>
  </ul>
 </script>
