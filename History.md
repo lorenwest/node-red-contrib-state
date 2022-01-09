@@ -1,3 +1,9 @@
+1.6.0 - 01/08/2022
+==================
+
+  * Added object clone on set and compare @colincoder
+  * Added ability to fire only once @colincoder
+
 1.5.1 - 09/01/2020
 ==================
 
