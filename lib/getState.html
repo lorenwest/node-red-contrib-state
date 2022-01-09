@@ -30,6 +30,7 @@
         state: {type:"shared-state", required:true},
         name: {value:""},
         triggerOnInit: {value:true},
+        triggerOnChange: {value:true},
       },
       inputs: 0,
       outputs: 1,
@@ -58,12 +59,34 @@
       labelStyle: function() {
         return this.state ? "node_label_italic" : "";
       },
+			// @colincoder Changes to make trigger modes more flexible
+	  oneditprepare: function() {
+        let node = this;
+//		console.log(node);
+		if (node.triggerOnInit && 
+			(typeof(node.triggerOnChange) === "undefined" || node.triggerOnChange)) {
+			$('#triggerOnBoth').prop('checked',true);	// Default to both like the previous version		
+		}
+		else if (node.triggerOnInit) {
+			$('#triggerOnInit').prop('checked',true);			
+		}
+		else {
+			$('#triggerOnChange').prop('checked',true);			
+		}
+	 },
       oneditsave: function() {
-        // Set the node name to the selected state
-        this.name = $('#node-input-state option:selected').text();
-      },
-
+       let node = this;
+       // Set the node name to the selected state
+	   node.name = $('#node-input-state option:selected').text();
+	   // Save the trigger method settings
+	   node.triggerOnInit = $('#triggerOnInit').prop('checked') || $('#triggerOnBoth').prop('checked');
+	   node.triggerOnChange = $('#triggerOnChange').prop('checked') || $('#triggerOnBoth').prop('checked');
+ // 		console.log(node);
+     },
+			// @colincoder End of changes to make trigger modes more flexible
   });
+
+  
 </script>
 
 <!-- Properties Editor -->
@@ -77,11 +100,16 @@
 </div>
 
 <div class="form-row">
-    <label for="node-input-triggerOnInit">&nbsp;</label>
-    <input type="checkbox" id="node-input-triggerOnInit" style="display:inline-block; width:15px; vertical-align:baseline;">
-    <span>Trigger on init</span>&nbsp;
+    <label for="triggerOnInit"><i style="width:20px; text-align:left;" class="fa fa-bolt"></i> Fire On</label>
+    <input type="radio" id="triggerOnInit" name="triggermode" style="display:inline-block; width:15px; vertical-align:baseline;">
+    <span>Initializing</span><br \>
+    <label for="triggerOnChange">&nbsp;</label>
+    <input type="radio" id="triggerOnChange" name="triggermode" style="display:inline-block; width:15px; vertical-align:baseline;">
+    <span>State Change</span><br \>
+    <label for="triggerOnBoth">&nbsp;</label>
+    <input type="radio" id="triggerOnBoth" name="triggermode" style="display:inline-block; width:15px; vertical-align:baseline;">
+    <span>Both</span>&nbsp;
 </div>
-
 
 </script>
 
@@ -95,7 +123,7 @@
  <h4>Configuration</h4>
  <ul>
    <li><b>State</b> - Reference to the shared state. It is defined independently to be shared among many <i>getState</i> and <i>setState</i> nodes.</li>
-   <li><b>Trigger on init</b> - If checked, this flow will be triggered on initialization and on state change. This can assure downstream nodes in the flow have the correct state on initialziation. Un-check this if you want your flow triggered on state <i>change</i> only.</li>
+   <li><b>Fire on</b> - The current state will be sent on either or both of two events.  If <i>Initializing</i> is selected this flow will be triggered on initialization only.  If <i>State Change</i> is selected then it will be triggered on state change only. When <i>Both</i> is selected it will trigger on either.  Updating from earlier versions will result in <i>Both</i> being selected if <i>Init</i> was previously checked, or <i>State Change</i> if not, so that original behavior is maintained.</li>
  </ul>
  <h4>Message Flows</h4>
  When this starts a new flow, the <i>msg</i> object contains
