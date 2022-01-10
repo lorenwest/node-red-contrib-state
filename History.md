@@ -1,3 +1,8 @@
+1.6.1 - 01/09/2022
+==================
+
+  * Fixed an "undefined" when reading ps from history and there isn't any… @colincoder
+
 1.6.0 - 01/08/2022
 ==================
 
