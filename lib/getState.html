@@ -27,12 +27,12 @@
   RED.nodes.registerType('get-shared-state',{
       category: 'common',     // Palette category
       defaults: {             // Editable properties
-        state: {type:"shared-state", required:true},
+        state: {type:"shared-state", required:false, value:''},
         name: {value:""},
         triggerOnInit: {value:true},
         triggerOnChange: {value:true},
       },
-      inputs: 0,
+      inputs: 1,
       outputs: 1,
 
       // Use a stock icon https://nodered.org/docs/creating-nodes/appearance#stock-icons

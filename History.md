@@ -1,3 +1,8 @@
+1.6.2 - 04/12/2023
+==================
+  * Add input on get-state node 
+  * Allow to set state name from topic message 
+
 1.6.1 - 01/09/2022
 ==================
 
