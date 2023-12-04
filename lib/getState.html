@@ -31,6 +31,7 @@
         name: {value:""},
         triggerOnInit: {value:true},
         triggerOnChange: {value:true},
+ 	  	triggerOnInput: {value:true},
       },
       inputs: 1,
       outputs: 1,
@@ -63,14 +64,13 @@
 	  oneditprepare: function() {
         let node = this;
 //		console.log(node);
-		if (node.triggerOnInit && 
-			(typeof(node.triggerOnChange) === "undefined" || node.triggerOnChange)) {
-			$('#triggerOnBoth').prop('checked',true);	// Default to both like the previous version		
-		}
-		else if (node.triggerOnInit) {
+		if (node.triggerOnInit && node.triggerOnChange && node.triggerOnInput)) {
+			$('#triggerOnAll').prop('checked',true);	// Default to both like the previous version		
+		} else if (node.triggerOnInit) {
 			$('#triggerOnInit').prop('checked',true);			
-		}
-		else {
+		} else  if (node.triggerOnInput) {
+			$('#triggerOnInput').prop('checked',true);			
+		} else {
 			$('#triggerOnChange').prop('checked',true);			
 		}
 	 },
@@ -79,8 +79,9 @@
        // Set the node name to the selected state
 	   node.name = $('#node-input-state option:selected').text();
 	   // Save the trigger method settings
-	   node.triggerOnInit = $('#triggerOnInit').prop('checked') || $('#triggerOnBoth').prop('checked');
-	   node.triggerOnChange = $('#triggerOnChange').prop('checked') || $('#triggerOnBoth').prop('checked');
+	   node.triggerOnInit = $('#triggerOnInit').prop('checked') || $('#triggerOnAll').prop('checked');
+	   node.triggerOnChange = $('#triggerOnChange').prop('checked') || $('#triggerOnAll').prop('checked');
+	   node.triggerOnInput = $('#triggerOnInput').prop('checked') || $('#triggerOnAll').prop('checked');
  // 		console.log(node);
      },
 			// @colincoder End of changes to make trigger modes more flexible
@@ -100,15 +101,15 @@
 </div>
 
 <div class="form-row">
-    <label for="triggerOnInit"><i style="width:20px; text-align:left;" class="fa fa-bolt"></i> Fire On</label>
+    <b><i style="width:20px; text-align:left;" class="fa fa-bolt"></i> Fire On</b>
     <input type="radio" id="triggerOnInit" name="triggermode" style="display:inline-block; width:15px; vertical-align:baseline;">
-    <span>Initializing</span><br \>
-    <label for="triggerOnChange">&nbsp;</label>
+    <label for="triggerOnInit"><span>Initializing</span></label><br \>
     <input type="radio" id="triggerOnChange" name="triggermode" style="display:inline-block; width:15px; vertical-align:baseline;">
-    <span>State Change</span><br \>
-    <label for="triggerOnBoth">&nbsp;</label>
-    <input type="radio" id="triggerOnBoth" name="triggermode" style="display:inline-block; width:15px; vertical-align:baseline;">
-    <span>Both</span>&nbsp;
+    <label for="triggerOnChange"><span>State Change</span></label><br \>
+	<input type="radio" id="triggerOnChange" name="triggermode" style="display:inline-block; width:15px; vertical-align:baseline;">
+    <label for="triggerOnChange"><span>State Change</span></label><br \>
+    <input type="radio" id="triggerOnAll" name="triggermode" style="display:inline-block; width:15px; vertical-align:baseline;">
+    <label for="triggerOnAll"><span>All</span>&nbsp;</label>
 </div>
 
 </script>
