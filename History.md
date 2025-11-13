@@ -1,3 +1,14 @@
+1.6.2 - 11/13/2024
+==================
+
+  * Fixed state persistence issue: State values now correctly load from filesystem on Node-RED restart (@shangjianlou)
+  * Fixed global.json persistence: Removed duplicate state storage in global.json to avoid data inconsistency (@shangjianlou)
+  * Improved initialization order: Filesystem is now the primary source of truth, global context is runtime cache only (@shangjianlou)
+  * Added deep copy mechanism for proper object serialization (@shangjianlou)
+  * Fixed async initialization issue by using synchronous file read during constructor (@shangjianlou)
+  
+  Contributors: shangjianlou <shangjianlou@gmail.com>
+
 1.6.1 - 01/09/2022
 ==================
 
