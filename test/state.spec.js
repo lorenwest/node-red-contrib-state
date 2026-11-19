@@ -39,4 +39,24 @@ describe('shared state', function () {
     assert.equal(s.listenerCount('change'), 0);
     assert.equal(s.listenerCount('init'), 0);
   });
+
+  it('ignores a message with an undefined payload instead of crashing (#18)', async function () {
+    const objFlow = [
+      { id:'s', type:'shared-state', name:'obj', dataType:'obj', historyCount:2, saveInterval:'0', wires:[] },
+      { id:'w', type:'set-shared-state', state:'s', wires:[[]] },
+    ];
+    await helper.load([stateNode, setStateNode], objFlow);
+    const s = helper.getNode('s');
+    await s.update({ a: 1 });
+    const warnings = [];
+    s.warn = (m) => warnings.push(m);
+
+    // Same shape as the issue: a function node returned msg.payload as the msg
+    helper.getNode('w').receive({ action: null, state_left: 'OFF' });
+    await new Promise(r => setTimeout(r, 25));
+
+    assert.deepEqual(s.value, { a: 1 });
+    assert.equal(warnings.length, 1);
+    assert.match(warnings[0], /undefined/);
+  });
 });
